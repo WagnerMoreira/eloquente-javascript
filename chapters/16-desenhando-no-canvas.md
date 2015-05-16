@@ -4,17 +4,18 @@
 
 > M.C. Escher, citado por Bruno Ernst em The Magic Mirror of M.C. Escher.
 
-Os Browsers permitem de várias maneiras de mostrarem gráficos. A maneira mais simples é usar um estilos para posição e cor de elementos regulares do DOM. Isso pode ser impraticável, como ficou claro no jogo do capítulo anterior. Podemos adicionar parcialmente uma transparência no fundo das imagens e ainda girar ou inclinar algum usando o estilo de `transform`.
+Os Browsers nos oferecem várias maneiras de exibir gráficos. A maneira mais simples é usar estilos para posicionar e colorir elementos regulares do DOM. Isso pode levá-lo longe, como o jogo no capítulo anterior mostrou. Ao adicionar parcialmente imagens de fundo transparentes aos nós, nós podemos faze-los se parecer exatamente como desejamos.
+Ainda é possível girar ou inclinar os nós usando a propriedade `transform`
 
-Mas estaríamos usando o DOM para algo que não foi originalmente projetado. Algumas tarefas, tais como desenhar uma linha entre pontos arbitrários são extremamente difíceis de fazer com elementos regulares em HTML.
+Mas nós estaríamos usando o DOM para algo que ele não foi originalmente projetado. Algumas tarefas, tais como desenhar uma linha entre pontos arbitrários são extremamente difíceis de fazer com elementos regulares em HTML.
 
-Existem duas alternativas. O primeiro é baseado em DOM mas utiliza Scalable Vector Graphics(`SVG`) ao invés de elementos HTML. Pense em SVG como um dialeto para descrever documentos que se concentra em formas ao invéz de texto. Você pode embutir um documento SVG em um documento HTML ou você pode incluí-lo através de uma tag `<img>`.
+Existem duas alternativas. A primeira é baseada no DOM mas utiliza Scalable Vector Graphics(`SVG`) ao invés de elementos HTML. Pense em SVG como um dialeto para descrever documentos que se concentra em formas ao invéz de texto. Você pode embutir um documento SVG em um documento HTML ou você pode incluí-lo através de uma tag `<img>`.
 
-A segunda alternativa é chamado de `canvas`. A tela é um único elemento DOM que encapsula uma imagem. Ele fornece uma interface de programação para desenhar formas para o espaço ocupado pelo nó. A principal diferença entre um `canvas` e uma imagem de `SVG`, é que em `SVG` a descrição original das formas é preservada de modo que eles podem ser movidos ou redimensionados em qualquer momento. O  `canvas` por outro lado, converte as formas para pixels(pontos coloridos em um rastro), logo eles são desenhados e não guardam informações do que estes pixels representam. A única maneira de mover uma forma em `canvas` é limpar a tela(ou a parte da tela em torno) e redesenhar uma forma em uma nova posição.
+A segunda alternativa é chamada de `canvas`. O canvas é um único elemento no DOM que encapsula uma imagem. Ele fornece uma interface de programação para desenhar formas no espaço ocupado pelo nó. A principal diferença entre um `canvas` e uma imagem que é em `SVG`, é que em `SVG` a descrição original das formas é preservada de modo que eles podem ser movidos ou redimensionados em qualquer momento. O `canvas` por outro lado, converte as formas para pixels(pontos coloridos em um rastro), logo eles são desenhados e não guardam informações do que estes pixels representam. A única maneira de mover uma forma em `canvas` é limpar a tela(ou a parte da tela ao redor forma) e redesenhar uma forma em uma nova posição.
 
 #### SVG
 
-Este livro não vai entrar no assunto `SVG` em detalhes, mas vou explicar brevemente como ele funciona. No final do capítulo eu vou voltar para os `trade-offs` que você deve considerar ao decidir qual mecanismo de desenho é adequado para uma determinada aplicação.
+Este livro não vai entrar no assunto `SVG` em detalhes, mas vou explicar brevemente como funciona. No final do capítulo eu vou voltar para os `trade-offs` que você deve considerar ao decidir qual mecanismo de desenho é adequado para uma determinada aplicação.
 
 Este é um documento HTML com uma imagem SVG simples:
 
@@ -27,9 +28,9 @@ Este é um documento HTML com uma imagem SVG simples:
 </svg>
 ````
 
-O atributo `xmlns` muda um elemento(e seus filhos) a um namespace diferente de XML. Este namespace é identificado por um URL, especificando o dialeto que estamos falando no momento. As *tags* `<circle>` e `<rect>` que não existem em HTML não têm um significado em SVG para desenhar formas usando o estilo e posição especificada para seus atributos.
+O atributo `xmlns` muda um elemento(e seus filhos) para um namespace diferente de XML. Este namespace é identificado por um URL, especificando o dialeto que estamos falando no momento. As *tags* `<circle>` e `<rect>` que não existem em HTML não têm um significado em SVG para desenhar formas usando o estilo e posição especificada para seus atributos.
 
-Essas *tags* criam elementos no DOM assim como as *tags* em HTML. Por exemplo, isso muda a cor para ciano do elemento `<circle>`:
+Essas *tags* criam elementos no DOM assim como as *tags* HTML. Por exemplo, isso muda a cor do elemento `<circle>` para ciano:
 
 ````js
 var circle = document.querySelector("circle");
@@ -38,13 +39,13 @@ circle.setAttribute("fill", "cyan");
 
 #### O elemento canvas
 
-Gráfico em *canvas* pode ser desenhado com a tag `<canvas>`. Você pode dar a um elemento a largura e altura em pixel para determinar o seu tamanho.
+Gráfico em *canvas* podem ser desenhados com a tag `<canvas>`. Você pode dar a um elemento os atributos largura e altura para determinar o seu tamanho em pixels.
 
-A nova tela esta vazia, o que significa que é totalmente transparente e portanto simplesmente mostra-se com um espaço vazio no documento.
+Um novo canvas é vazio, o que significa que é totalmente transparente e portanto mostra-se simplesmente como um espaço vazio no documento.
 
-A *tag* `<canvas>` destina-se a apoiar os diferentes estilos de desenho. Para ter acesso a uma verdadeira interface de desenho primeiro precisamos criar um contexto que é um objeto, cujos métodos fornecem a interface de desenho. Atualmente existem dois estilos de desenho amplamente suportados: *"2d"* para gráficos bidimensionais e *"WebGL"* para gráficos tridimensionais através da interface `OpenGL`.
+A *tag* `<canvas>` destina-se a suportar diferentes estilos de desenho. Para ter acesso a uma interface de desenho real primeiro nós precisamos criar um contexto que é um objeto, cujos métodos fornecem a interface de desenho. Atualmente existem dois estilos de desenho amplamente suportados: *"2d"* para gráficos bidimensionais e *"WebGL"* para gráficos tridimensionais através da interface `OpenGL`.
 
-Este livro não vai discutir *WebGL*. Nós esturemos as duas dimensões. Mas se você estiver interessado em gráficos tridimensionais eu encorajo-vos a olhar para *WebGL*, que fornece uma interface muito direta com o hardware com gráfico moderno e permite que você processe cenas eficientemente complicadas utilizando JavaScript.
+Este livro não vai discutir *WebGL*. Nós manteremos as duas dimensões. Mas se você estiver interessado em gráficos tridimensionais eu teencorajo- a olhar para *WebGL*, que fornece uma interface muito direta com o hardware com gráfico moderno e permite que você renderize até mesmo cenas complexas eficientemente, utilizando JavaScript.
 
 Um contexto é criado através do método `getContext` sobre o elemento `<canvas>`.
 
@@ -62,17 +63,17 @@ Um contexto é criado através do método `getContext` sobre o elemento `<canvas
 
 Depois de criar o objeto de contexto, o exemplo desenha um retângulo vermelho de 100 pixels de largura e 50 pixels de altura em relação ao seu canto superior esquerdo nas coordenadas (10,10).
 
-Assim como em HTML e SVG o sistema que a tela usa puts(0,0) no canto superior esquerdo de coordenadas, e o eixo y positivo vai para baixo. Então (10,10) é de 10 pixels abaixo e a direita do canto superior esquerdo.
+Assim como em HTML e SVG o sistema de coordenadas que o canvas usa adiciona(0,0) no canto superior esquerdo, e o eixo y positivo vai para baixo. Então (10,10) é de 10 pixels abaixo e a direita do canto superior esquerdo.
 
 #### Preenchimento e traçado
 
-Na interface uma forma pode ser cheia ou seja, sua área é dada uma determinada cor padrão; ou pode ser riscada o que significa que uma linha é desenhada ao longo de sua borda. A mesma terminologia é utilizada por SVG.
+Na interface do `canvas` uma forma pode ser preenchida, significa que em sua área é dada uma determinada cor ou padrão; ou pode ser riscada o que significa que uma linha é desenhada ao longo de sua borda. A mesma terminologia é utilizada pelo SVG.
 
-O método `fillRect` preenche um retângulo. É preciso ter as coordenadas `x` e `y` do canto superior esquerdo do retângulo, em seguida a sua largura e a sua altura. Um método semelhante `strokeRect` desenha o contorno de um retângulo.
+O método `fillRect` preenche um retângulo. É preciso primeiro das coordenadas `x` e `y` do canto superior esquerdo do retângulo, etão a sua largura e a sua altura. Um método semelhante `strokeRect` desenha o contorno de um retângulo.
 
-Nenhum dos métodos tem parâmetros. A cor do preenchimento e a espessura do traçado não são determinados por argumento do método(como você espera), mas sim pelas propriedades do contexto do objecto.
+Nenhum dos métodos recebe quais outros parâmetros. A cor do preenchimento, espessura do traço, e assim por diante, não são determinados por um argumento para o método(como você espera), mas sim pelas propriedades do contexto do objecto.
 
-As definições de `fillStyle` pode alterar o jeito que as formas são preenchidas. Ele pode ser definido como uma `string` que especifica uma cor de qualquer modo que é compreendido por CSS.
+Definindo o `fillStyle` mudará o maneira que as formas são preenchidas. Ele pode ser definido como uma `string` que especifica uma cor, e qualquer cor compreendida pelo CSS pode ser usada aqui.
 
 A propriedade `strokeStyle` funciona de forma semelhante, mas determina a cor usada para uma linha. A largura da linha é determinada pela propriedade `lineWidth` que pode conter qualquer número positivo.
 
@@ -87,7 +88,7 @@ A propriedade `strokeStyle` funciona de forma semelhante, mas determina a cor us
 </script>
 ```
 
-Quando nenhuma largura ou altura é especificado como atributo, como no exemplo anterior um elemento de tela adquire uma largura padrão de 300 pixels e altura de 150 pixels.
+Quando nenhuma largura ou altura é especificado como atributo como no exemplo anterior, um elemento de tela adquire uma largura padrão de 300 pixels e altura de 150 pixels.
 
 #### Paths
 
@@ -106,10 +107,10 @@ Um `path` é uma seqüência de linhas. A interface de uma tela 2D tem uma abord
 </script>
 ```
 
-Este exemplo cria um `path` com um número de segmentos de linha horizontal e faz traços usando o método `stroke`. Cada segmento criado com `lineTo` começa na posição atual do `path`. Esta posição é normalmente o fim do último segmento a não ser que `moveTo` seja chamado. Nesse caso, o próximo segmento começara na posição passada para `moveTo`.
+Este exemplo cria um `path` com um número de segmentos de linha horizontal e faz traços usando o método `stroke`. Cada segmento criado com `lineTo` começa na posição atual do `path`. Esta posição é geralmente o fim do último segmento a menos que o `moveTo` seja chamado. Nesse caso, o próximo segmento começara na posição passada para `moveTo`.
 
-Ao preencher um `path`(usando o método `fill`) cada forma é preenchido separadamente. Um `path` pode conter várias formas, cada movimento com `moveTo` inicia um novo. Mas o `path` tem de ser fechado(ou seja o seu início e fim devem ficar na mesma posição) antes de ser preenchido. 
-Se o `path` não estiver fechado a linha é adicionada a partir de sua extremidade para o começo da forma delimitada pelo `path` como completado e preenchido.
+Quando preencher um `path`(usando o método `fill`) cada forma é preenchido separadamente. Um `path` pode conter várias formas, cada movimento com `moveTo` inicia um novo. Mas o `path` precisa ser fechado(significa que início e fim estão na mesma posição) antes que possa ser preenchido. 
+Se o `path` não estiver fechado, uma linha é adicionada do seu fim para o seu inicio, e a forma incluida pelo `path` completo e preenchido.
 
 ```html
 <canvas></canvas>
@@ -123,9 +124,9 @@ Se o `path` não estiver fechado a linha é adicionada a partir de sua extremida
 </script>
 ```
 
-Este exemplo estabelece um triângulo cheio. Note que apenas dois dos lados do triângulo são explicitamente desenhados. A terceira é a partir do canto inferior direito ate o topo; é implícito e não estará lá quando você traçar o `path`.
+Este exemplo desenha um triângulo preenchido. Perceba que apenas dois dos lados do triângulo são explicitamente desenhados. A terceira é a partir do canto inferior direito ate o topo, é implícito e não estará lá quando você traçar o `path`.
 
-Você também pode usar o método `closePath` para fechar explicitamente um `path` através da adição de um segmento da linha atual de volta ao início do `path`. Este segmento é desenhado traçando o `path`.
+Você também pode usar o método `closePath` para fechar explicitamente um `path` através da adição de um segmento da linha atual de volta ao início do `path`. Este segmento é desenhado enquanto o `path` está sendo desenhado.
 
 #### Curvas
 
