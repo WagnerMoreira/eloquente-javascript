@@ -130,8 +130,8 @@ Você também pode usar o método `closePath` para fechar explicitamente um `pat
 
 #### Curvas
 
-Um `path` também pode conter linhas com curvas. Estes infelizmente é um pouco mais complexo do que desenhar linhas retas.
-O método `quadraticCurveTo` desenha uma curva ate um ponto considerado. Para determinar a curvatura da linha é dado no método um ponto de controle e um ponto de destino. Imagine o seguinte, ponto de controle é uma atração a linha, o que da a ela sua curvatura. A linha não passa pelo ponto de controle. Ao contrário disso a direcção da linha nos seus pontos de início e fim fica alinhado, com a linha puxando para o ponto de controle. O exemplo a seguir ilustra isso:
+Um `path` também pode conter linhas com curvas. Estes são, infelizmente, um pouco mais elaboradas do que desenhar linhas retas.
+O método `quadraticCurveTo` desenha uma curva ate um determinado ponto. Para determinar a curvatura da linha, é dado no método um ponto de controle bem como um ponto de destino. Imagine este ponto de controle, como uma atração à linha, o que da a ela sua curvatura. A linha não passa pelo ponto de controle. Em vez disso, a direção da linha nos seus pontos de início e fim ficam alinhados com a linha de lá, para o ponto de controle. O exemplo a seguir ilustra isso:
 
 ```html
 <canvas></canvas>
@@ -147,9 +147,9 @@ O método `quadraticCurveTo` desenha uma curva ate um ponto considerado. Para de
 </script>
 ```
 
-Nós desenharemos uma curva quadrática a partir da esquerda para a direita com (60,10) no ponto de controle e depois colocamos dois segmentos da linha passando por esse ponto de controle de volta para o início da linha. O resultado lembra um pouco uma insígnia do Star Trek. Você pode ver o efeito do ponto de controle: as linhas que saem dos cantos inferiores começam na direção do ponto de controle e em seguida se curva em direção a seu alvo.
+Nós desenharemos uma curva quadrática a partir da esquerda para a direita, com (60,10) como ponto de controle, e depois colocamos dois segmentos da linha passando por esse ponto de controle de volta para o início da linha. O resultado lembra um pouco uma insígnia do Star Trek. Você pode ver o efeito do ponto de controle: as linhas que saem dos cantos inferiores começam na direção do ponto de controle e em seguida se curva em direção a seu alvo.
 
-O método `bezierCurve` desenha um tipo semelhante de uma curva. Em vez de um único ponto de controle este tem dois, um para cada um dos pontos das extremidades da linha. Aqui é um esboço semelhante para ilustrar o comportamento de uma tal curva:
+O método `bezierCurveTo` desenha uma curva semelhante. Em vez de um único ponto de controle este tem dois, um para cada um dos pontos das extremidades da linha. Aqui está um esboço semelhante para ilustrar o comportamento desta curva:
 
 ```html
 <canvas></canvas>
@@ -166,11 +166,11 @@ O método `bezierCurve` desenha um tipo semelhante de uma curva. Em vez de um ú
 </script>
 ```
 
-Os dois pontos de controle especificam a direção em ambas as extremidades da curva. Quanto mais eles estão longe de seu ponto correspondente, maior a curva que vai nesse sentido.
+Os dois pontos de controle especificam a direção em ambas as extremidades da curva. Quanto mais eles estão longe de seu ponto correspondente, maior é a curvatura neste sentido.
 
-Tais curvas pode ser difícil de trabalhar, nem sempre é evidente encontrar a forma dos pontos de controle que proporcionam a forma que você está procurando. Às vezes você pode calcular, e às vezes você apenas tem que encontrar um valor apropriado por tentativa e erro.
+Tais curvas podem ser difíceis de se trabalhar, nem sempre está claro como encontrar os pontos de controle que provem a forma que você está procurando. Às vezes você pode calcular, e às vezes você apenas tem que encontrar um valor adequado por tentativa e erro.
 
-Fragmentos `arcs` de um círculo são mais fáceis de se trabalhar. O método `arcTo` não leva menos de cinco argumentos. Os quatro primeiros argumentos agem um pouco como os argumentos para `quadraticCurveTo`. O primeiro par fornece uma espécie de ponto de controle e o segundo par da o destino a linha. O quinto argumento fornece o raio do arco. O método vai conceitualmente projetar um canto da linha que vai para o ponto de controle e em seguida volta ao ponto de destino para que ele faça parte de um círculo com o raio dado. O método `arcTo` chega então a uma parte arredondada bem como uma linha a partir da posição de partida ate o início de uma parte arredondada.
+Fragmentos `arcs` de um círculo são mais fáceis de se trabalhar. O método `arcTo` não leva menos de cinco argumentos. Os quatro primeiros argumentos agem um pouco como os argumentos do método `quadraticCurveTo`. O primeiro par fornece uma espécie de ponto de controle e o segundo par da o destino a linha. O quinto argumento fornece o raio do arco. O método vai conceitualmente projetar um canto da linha que vai para o ponto de controle e em seguida para o ponto de destino e arredonde o canto até que isso forme parte de um círculo com o raio dado. O método `arcTo` então desenha a parte arredondada, bem como uma linha a partir da posição inicial ate o início da parte arredondada.
 
 ```html
 <canvas></canvas>
@@ -187,11 +187,11 @@ Fragmentos `arcs` de um círculo são mais fáceis de se trabalhar. O método `a
 </script>
 ```
 
-O método `arcTo` não vai desenhar a linha a partir da parte final do arredondamento para a posição do objetivo, embora a palavra no seu nome sugere o que ele faz. Você pode acompanhar com uma chamada de `lineTo` com o mesmo objetivo de coordena e acrescentar uma parte da linha.
+O método `arcTo` não vai desenhar a linha a partir da parte final do arredondamento para a posição do objetivo, embora a palavra "para" no seu nome sugere que faz. Você pode acompanhar com uma chamada de `lineTo` com o mesmo objetivo de acrescentar que coordena parte da linha.
 
-Para desenhar um círculo você poderia usar quatro chamadas para `arcTo`(cada um que giram 90 graus). Mas o método `arcTo` fornece uma maneira mais simples. É preciso um par de coordenadas para o centro do arco, um raio e em seguida um ângulo de início e fim.
+Para desenhar um círculo você poderia usar quatro chamadas de `arcTo`(cada um gira 90 graus). Mas o método `arc` fornece uma maneira mais simples. É preciso um par de coordenadas para o centro do arco, um raio e então um ângulo de início e fim.
 
-Esses dois últimos parâmetros tornam possível desenhar apenas uma parte do círculo. Os ângulos são medidos em radianos não em graus. Isso significa que um círculo completo tem um ângulo de `2π` ou `2 * Math.PI` que é de cerca de `6,28`. O ângulo começa a contar a partir do ponto da direita do centro do círculo e vai a partir do sentido horário. Você pode usar um começo de `0` e um fim maior do que `2π`(digamos 7) para desenhar um círculo completo.
+Esses dois últimos parâmetros tornam possível desenhar apenas uma parte do círculo. Os ângulos são medidos em radianos não em graus. Isso significa que um círculo completo tem um ângulo de `2π` ou `2 * Math.PI` que é de cerca de `6,28`. O ângulo começa a contar a partir do ponto da direita do centro do círculo e vai no sentido horário a partir daí. Você pode usar um começo de `0` e um fim maior do que `2π`(digamos 7) para desenhar um círculo completo.
 
 ```html
 <canvas></canvas>
@@ -206,13 +206,13 @@ Esses dois últimos parâmetros tornam possível desenhar apenas uma parte do c�
 </script>
 ```
 
-A imagem resultante contém uma linha no círculo(primeira chamada de `arc`) a esquerda do quarto do círculo(segunda chamada). Como outros métodos estão ligados ao desenho de um `path`, uma linha traçada é ligado ao segmento do arco anterior por padrão. Se você quiser evitar isso teria que chamar `moveTo` ou iniciar um novo `path`.
+A imagem resultante contém uma linha no círculo(primeira chamada de `arc`) a direita do quarto do círculo(segunda chamada). Como outros métodos de desenho de caminho, uma linha desenhada com `arc` é ligado ao segmento do caminho anterior por padrão. Se você quiser evitar isso precisa chamar o `moveTo` ou iniciar um novo `path`.
 
 #### Desenho de um gráfico de pizza
 
 Imagine que você acabou de conseguir um emprego na EconomiCorp Inc. e sua primeira missão é desenhar um gráfico de pizza dos resultados da pesquisa de satisfação do cliente.
 
-A variável dos resultados contém uma matriz de objetos que representam as respostas da pesquisa.
+A variável dos resultados contém um array de objetos que representa as respostas da pesquisa.
 
 ```js
 var results = [
@@ -223,7 +223,7 @@ var results = [
 ];
 ```
 
-Para desenhar um gráfico de pizza, traçamos um número de fatias, cada um é composto por um arco e um par de linhas para o centro desse arco. Podemos calcular o ângulo ocupado por cada arco dividindo um círculo completo(2π) pelo número total de respostas, em seguida multiplicamos esse número(o ângulo por resposta) pelo número de pessoas que fizeram determinadas escolhas.
+Para desenhar um gráfico de pizza, desenhamos um número de fatias, cada um é composto por um arco e um par de linhas para o centro desse arco. Podemos calcular o ângulo ocupado por cada arco dividindo um círculo completo(2π) pelo número total de respostas, em seguida multiplicamos esse número(o ângulo por resposta) pelo número de pessoas que fizeram determinadas escolhas.
 
 ```html
 <canvas width="200" height="200"></canvas>
