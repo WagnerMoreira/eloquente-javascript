@@ -249,7 +249,7 @@ Para desenhar um gráfico de pizza, desenhamos um número de fatias, cada um é 
 </script>
 ```
 
-Mas um gráfico que não nos diz o que significa não é útil. Nós precisamos de uma maneira para desenhar o texto na tela.
+Mas um gráfico que não nos diz o que significa não é muito útil. Nós precisamos de uma maneira de desenhar o texto no canvas.
 
 #### Texto
 
@@ -265,17 +265,17 @@ Um contexto de desenho em canvas 2D fornece os métodos `fillText` e `strokeText
 </script>
 ```
 
-Você pode especificar o tamanho, estilo e tipo da letra do texto com a propriedade `font`. Este exemplo apenas dá um tamanho de fonte e nome da família. Você pode adicionar o itálico ou negrito para o início de uma seqüência de caracteres.
+Você pode especificar o tamanho, estilo e tipo da letra do texto com a propriedade `font`. Este exemplo apenas dá um tamanho de fonte e nome da família. Você pode adicionar o itálico ou negrito no início de uma palavra para selecionar o estilo.
 
-Os dois últimos argumentos para `fillText`(e `strokeText`) fornecem a posição em que a fonte é desenhado. Por padrão a posição do início da linha indica a base alfabética do texto, que é a linha que as letras ficam não tendo partes penduradas; em letras como `j` ou `p` você pode mudar a posição horizontal definindo a propriedade `textAlign` para `end` ou `center` ou posicionamento vertical definindo `textBaseline` para `top`, `middle` ou `bottom`.
+Os dois últimos argumentos para `fillText`(e `strokeText`) fornecem a posição em que a fonte é desenhada. Por padrão eles indicam a posição do início da linha de base alfabética do texto, que é a linha que as letras ficam, sem contar as partes penduradas em letras como `j` ou `p` você pode mudar a posição horizontal definindo a propriedade `textAlign` para `end` ou `center` ou posicionamento vertical definindo `textBaseline` para `top`, `middle` ou `bottom`.
 
-Vamos voltar ao nosso gráfico de pizza para corrigir o problema de rotular as fatias nos exercícios no final do capítulo.
+Nós vamos voltar ao nosso gráfico de pizza, e o problema de rotular as fatias nos exercícios no final do capítulo.
 
 #### Imagens
 
-Na computação gráfica uma distinção é feita frequentemente entre gráficos vetoriais e bitmap. O primeiro é como iremos fazer neste capítulo; a especificação de uma imagem dando uma descrição lógica de formas. Os gráficos de bitmap não especificam formas reais, mas sim trabalham com dados de pixel(ratros de pontos coloridos).
+Na computação gráfica uma distinção é feita frequentemente entre gráficos vetoriais e bitmap. O primeiro é como temos feito neste capítulo, especificando uma imagem dando uma descrição lógica de formas. Os gráficos de bitmap, na outra mão, não especificam formas reais, mas sim trabalham com dados de pixel(rasters de pontos coloridos).
 
-O método `drawImage` nos permite desenhar dados de pixel em `canvas`. Estes dados de pixel pode ter origem a partir de uma tag `<img>` ou `<canvas>`, e nem todos são visíveis no documento atual. O exemplo a seguir cria um elemento `<img>` e carrega um arquivo de imagem nele. Mas não é iniciado imediatamente; a elaboração desta imagem não ocorreu porque o browser ainda não buscou por isso. Para lidar com tal situação registramos um manipulador de eventos(`"load"`)  para fazer o desenho depois que a imagem for carregada.
+O método `drawImage` nos permite desenhar dados de pixel em `canvas`. Estes dados de pixel pode ter origem a partir de um elemento `<img>` ou `<canvas>`, e nem precisa estar visível no documento atual. O exemplo a seguir cria um elemento `<img>` destacado e carrega um arquivo de imagem nele. Mas não pode começar a desenhar a imagem imediatamente, porque o browser pode não ter carregado ela ainda. Para lidar com isso, nós registramos um evento (`"load"`) para fazer o desenho depois que a imagem for carregada.
 
 ```html
 <canvas></canvas>
@@ -292,15 +292,15 @@ O método `drawImage` nos permite desenhar dados de pixel em `canvas`. Estes dad
 
 Por padrão, `drawImage` vai desenhar a imagem em seu tamanho original. Você também pode dar-lhe dois argumentos adicionais para ditar uma largura e altura diferentes.
 
-`drawImage` recebe nove argumentos, ele pode ser utilizado para desenhar apenas um fragmento de uma imagem. Do segundo ao quinto argumento indicam o retângulo(x, y, largura e altura) na imagem de origem que deve ser copiado, do sexto ao nono argumentos indica o retângulo(na tela) em que deve ser copiado.
+Quando `drawImage` recebe nove argumentos, ele pode ser utilizado para desenhar apenas um fragmento de uma imagem. Do segundo ao quinto argumento indicam o retângulo(x, y, largura e altura) na imagem de origem que deve ser copiado, do sexto ao nono argumentos indica o retângulo(na tela) em que deve ser copiado.
 
-Isso pode ser usado para embalar várias sprites(elementos de imagem) em um único arquivo de imagem, em seguida desenhar apenas a parte que você precisa. Por exemplo, nós temos esta imagem contendo uma personagem do jogo em várias poses:
+Isso pode ser usado para empacotar várias sprites(elementos de imagem) em um único arquivo de imagem, em então desenhar apenas a parte que você precisa. Por exemplo, nós temos esta imagem contendo uma personagem do jogo em várias poses:
 
 ![Player big](../img/player_big.png)
 
 Ao alternar a pose que traçamos, podemos mostrar uma animação que que simula o movimento de andar do personagem.
 
-Para animar a imagem em uma tela o método `clearRect` é útil. Assemelha-se a `fillRect` mas ao invés de colorir o retângulo, torna-se transparente removendo os pixels previamente desenhados.
+Para animar a imagem em uma tela o método `clearRect` é útil. Assemelha-se ao `fillRect` mas ao invés de colorir o retângulo, torna-o transparente removendo os pixels previamente desenhados.
 
 Sabemos que a cada sprite são sub-imagens de 24 pixels de largura por 30 pixels de altura. O código a seguir carrega as imagens, e em seguida define um intervalo(temporizador de repetição) para desenhar os quadros seguintes:
 
@@ -309,7 +309,7 @@ Sabemos que a cada sprite são sub-imagens de 24 pixels de largura por 30 pixels
 <script>
 	var cx = document.querySelector("canvas").getContext("2d");
 	var img = document.createElement("img");
-	img.src = "img/player.png";
+	img.src = "img/player.png"; 
 	var spriteW = 24, spriteH = 30;
 	img.addEventListener("load", function() {
 		var cycle = 0;
@@ -326,13 +326,13 @@ Sabemos que a cada sprite são sub-imagens de 24 pixels de largura por 30 pixels
 </script>
 ```
 
-A variável `cycle` mapeia nossa posição na animação. A cada quadro ele é incrementado e em seguida cortado de volta para o intervalo de 0 a 7 usando o operador restante. Esta variável é usada para calcular a coordenada `x` que o sprite tem para a pose atual da imagem.
+A variável `cycle` acompanha nossa posição na animação. A cada quadro ele é incrementado e em seguida cortado de volta para o intervalo de 0 a 7 usando o operador restante. Esta variável é usada para calcular a coordenada `x` que o sprite tem para a pose atual da imagem.
 
 #### Transformações
 
-Mas e se queremos que o nosso personagem ande para a esquerda em vez de para a direita? Poderíamos acrescentar um outro conjunto de sprites, é claro. Mas também podemos instruir a tela para desenhar a imagem de outra maneira.
+Mas e se queremos que o nosso personagem ande para a esquerda ao invez de para a direita? Poderíamos acrescentar um outro conjunto de sprites, é claro. Mas também podemos instruir o canvas para desenhar a imagem de outra maneira.
 
-Chamar o método `scale` fará com que qualquer coisa desenhada depois possa ser escalado. Este método tem dois parâmetros, um para definir uma escala horizontal e um para definir uma escala vertical.
+Chamando o método `scale` fará com que qualquer coisa desenhada depois possa ser escalado. Este método recebe dois parâmetros, um para definir uma escala horizontal e um para definir uma escala vertical.
 
 ```html
 <canvas></canvas>
@@ -346,9 +346,9 @@ Chamar o método `scale` fará com que qualquer coisa desenhada depois possa ser
 </script>
 ```
 
-`scaling` fará tudo sobre a imagem desenhada incluindo: a largura da linha a ser esticado ou espremido, conforme especificado. Dimensionamento por um valor negativo vai inverter a imagem ao redor. A inversão acontece em torno do ponto(0,0); o que significa que tudo irá virar a direção do sistema de coordenadas. Quando uma escala horizontal de -1 é aplicada, a forma desenhada em x na posição 100 vai acabar na posição -100.
+Escalar fará com que tudo sobre a imagem desenhada, incluindo a largura da linha, ser esticado ou espremido conforme especificado. Dimensionando por um valor negativo vai inverter a imagem ao redor. A inversão acontece em torno do ponto(0,0), o que significa que isso irá virar a direção do sistema de coordenadas. Quando uma escala horizontal de -1 é aplicada, a forma desenhada em x na posição 100 vai acabar com o que seria a posição -100.
 
-Então para transformar uma imagem em torno não podemos simplesmente adicionar `cx.scale (-1, 1)` antes da chamada `drawImage` pois ira mover a nossa imagem fora da tela onde não será mais possível ve-la. Você pode ajustar as coordenadas dadas a `drawImage` para compensar esse desenho da imagem em x na posição -50 em vez de 0. Outra solução que não exige que o código faça o desenho para saber sobre a mudança de escala, é ajustar o eixo em torno do qual a escala acontece.
+Então para transformar uma imagem em torno não podemos simplesmente adicionar `cx.scale (-1, 1)` antes da chamada `drawImage` pois ira mover a nossa imagem para fora da tela onde não será mais possível ve-la. Você pode ajustar as coordenadas dadas a `drawImage` para compensar esse desenho da imagem em x na posição -50 em vez de 0. Outra solução que não exige que o código faça o desenho para saber sobre a mudança de escala, é ajustar o eixo em torno do qual a escala acontece.
 
 Há vários outros métodos além de `scale` que influenciam no sistema de coordenadas para o `canvas`. Você pode girar formas posteriormente desenhados com o método de `rotation` e movê-los com o método de `translate`. É interessante e confuso saber que estas transformações são realizados no estilo de pilha, o que significa que cada uma acontece em relação às transformações anteriores.
 
